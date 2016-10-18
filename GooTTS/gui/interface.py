@@ -10,6 +10,9 @@ o=output.Output()
 class MainGui(wx.Frame):
 	def __init__(self, title):
 		self.temp=tempfile.gettempdir()
+		self.lasttext=""
+		self.lastspoken=""
+
 		wx.Frame.__init__(self, None, title=title, size=(350,200)) # initialize the wx frame
 		self.Bind(wx.EVT_CLOSE, self.OnClose)
 		self.panel = wx.Panel(self)
@@ -34,7 +37,13 @@ class MainGui(wx.Frame):
 		self.panel.Layout()
 
 	def OnSpeak(self, event):
-		a=self.speak_wrapper(self.text.GetValue())
+		if self.lasttext!=self.text.GetValue():
+			a=self.speak_wrapper(self.text.GetValue())
+			self.lasttext=self.text.GetValue()
+			self.lastspoken=a
+		else:
+			a=self.lastspoken
+
 		self.s=self.speak_file(a)
 
 	def OnStop(self, event):
